@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIPopoverControllerDelegate, UINavigationControllerDelegate {
 
@@ -18,11 +19,15 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
 //        self.navigationController?.navigationBar.barStyle = UIBarStyle.black
 //        let attrs = [
 //            NSAttributedStringKey.foregroundColor: UIColor.white
 //        ]
 //        UINavigationBar.appearance().titleTextAttributes = attrs
+        FirebaseApp.configure()
+        var ref: DatabaseReference!
+        ref = Database.database().reference()
         
         imagePicked.contentMode = UIViewContentMode.scaleAspectFit
         imagePicked.layer.borderWidth = 2
@@ -95,4 +100,7 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
         imagePicked.image = nil
     }
     
+    func filter(image: UIImage) {
+        
+    }
 }

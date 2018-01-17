@@ -7,5 +7,6 @@ target 'PixelMe' do
 
   # Pods for PixelMe
   pod 'Firebase/Core'
+  pod 'Firebase/Database'
 
 end
