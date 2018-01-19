@@ -76,13 +76,15 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
 
     @IBAction func save(_ sender: Any) {
         uploadFile()
-        /*if let imageToSave = imagePicked.image {
+        imagePicked.image = imagePicked.image?.filter()
+        if let imageToSave = imagePicked.image {
             UIImageWriteToSavedPhotosAlbum(imageToSave, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+            
         } else {
             let ac = UIAlertController(title: "Oups..", message: "Vous n'avez pas d'image à sauvegarder..", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "Réessayer", style: .default))
             present(ac, animated: true)
-        }*/
+        }
     }
     
     @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
@@ -106,13 +108,34 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
     @IBAction func clear(_ sender: Any) {
         imagePicked.image = nil
     }
+}
+
+extension UIImage{
     
     @IBAction func goToGallery(_ sender: Any) {
         let photosVC = PhotosViewController(nibName: "PhotosViewController", bundle: nil)
         navigationController?.pushViewController(photosVC, animated: true )
     }
     
-    func filter(image: UIImage) {
+    func resizeImageWith(newSize: CGSize) -> UIImage {
         
+        let horizontalRatio = newSize.width / size.width
+        let verticalRatio = newSize.height / size.height
+        let ratio = max(horizontalRatio, verticalRatio)
+        let newSize = CGSize(width: size.width * ratio, height: size.height * ratio)
+        UIGraphicsBeginImageContextWithOptions(newSize, true, 0)
+        draw(in: CGRect(origin: CGPoint(x: 0, y: 0), size: newSize))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage!
     }
+    
+    func filter() -> UIImage {
+        let controlsFilter = CIFilter(name: "CIColorControls")!
+        controlsFilter.setValue(self, forKey: kCIInputImageKey)
+        controlsFilter.setValue(10, forKey: kCIInputSaturationKey)
+        let azerty = UIImage(ciImage: controlsFilter.outputImage!)
+        return azerty
+    }
+    
 }
