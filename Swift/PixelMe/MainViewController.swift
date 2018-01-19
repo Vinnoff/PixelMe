@@ -75,7 +75,7 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
     }
 
     @IBAction func save(_ sender: Any) {
-        uploadFile()
+        //uploadFile()
         imagePicked.image = imagePicked.image?.filter()
         if let imageToSave = imagePicked.image {
             UIImageWriteToSavedPhotosAlbum(imageToSave, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
@@ -108,14 +108,14 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
     @IBAction func clear(_ sender: Any) {
         imagePicked.image = nil
     }
-}
-
-extension UIImage{
     
     @IBAction func goToGallery(_ sender: Any) {
         let photosVC = PhotosViewController(nibName: "PhotosViewController", bundle: nil)
         navigationController?.pushViewController(photosVC, animated: true )
     }
+}
+
+extension UIImage{
     
     func resizeImageWith(newSize: CGSize) -> UIImage {
         
@@ -130,11 +130,22 @@ extension UIImage{
         return newImage!
     }
     
+    func resizeImage(newSize: CGSize) -> UIImage {
+        UIGraphicsBeginImageContext(newSize)
+        self.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage!
+    }
+
+    
     func filter() -> UIImage {
         let controlsFilter = CIFilter(name: "CIColorControls")!
-        controlsFilter.setValue(self, forKey: kCIInputImageKey)
-        controlsFilter.setValue(10, forKey: kCIInputSaturationKey)
-        let azerty = UIImage(ciImage: controlsFilter.outputImage!)
+        let ccimage = CIImage(image: self)
+        controlsFilter.setValue(ccimage, forKey: kCIInputImageKey)
+        controlsFilter.setValue(2, forKey: kCIInputSaturationKey)
+        let azerty = UIImage(cgImage: CIContext(options: nil).createCGImage(controlsFilter.outputImage!, from: controlsFilter.outputImage!.extent)!).resizeImage(newSize: CGSize(width: 64, height: 32))
+
         return azerty
     }
     
