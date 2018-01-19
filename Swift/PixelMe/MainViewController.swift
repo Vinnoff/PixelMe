@@ -41,7 +41,7 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
             
             let key = Database.database().reference().childByAutoId().key
             // Create a reference to the file you want to upload
-            let riversRef = storageRef.child("images/\(key).jpg")
+            let riversRef = storageRef.child("images/\(key).bmp")
             
             // Upload the file to the path "images/rivers.jpg"
             riversRef.putData(data, metadata: nil) { (metadata, error) in
@@ -74,8 +74,8 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
         }
     }
 
-    @IBAction func save(_ sender: Any) {
-        //uploadFile()
+
+    @IBAction func saveLibrary(_ sender: Any) {
         imagePicked.image = imagePicked.image?.filter()
         if let imageToSave = imagePicked.image {
             UIImageWriteToSavedPhotosAlbum(imageToSave, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
@@ -85,6 +85,10 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
             ac.addAction(UIAlertAction(title: "Réessayer", style: .default))
             present(ac, animated: true)
         }
+    }
+    
+    @IBAction func send(_ sender: Any) {
+        uploadFile()
     }
     
     @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
@@ -111,7 +115,7 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
     
     @IBAction func goToGallery(_ sender: Any) {
         let photosVC = PhotosViewController(nibName: "PhotosViewController", bundle: nil)
-        navigationController?.pushViewController(photosVC, animated: true )
+        navigationController?.pushViewController(photosVC, animated: true)
     }
 }
 

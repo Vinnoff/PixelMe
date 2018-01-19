@@ -28,6 +28,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         
+        var navigationBarAppearace = UINavigationBar.appearance()
+        
+        navigationBarAppearace.barTintColor = UIColor.black
+        navigationBarAppearace.tintColor = UIColor.white
+        navigationBarAppearace.titleTextAttributes = [NSAttributedStringKey.foregroundColor:UIColor.white]
+        
+        UIApplication.shared.statusBarStyle = UIStatusBarStyle.lightContent
+        
         let window = UIWindow(frame: UIScreen.main.bounds)
         let nav = UINavigationController(rootViewController: MainViewController())
         window.rootViewController = nav
