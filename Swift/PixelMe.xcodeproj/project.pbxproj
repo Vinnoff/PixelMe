@@ -12,6 +12,8 @@
 		4503D60C1FDA8C8E00C740A3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4503D60A1FDA8C8E00C740A3 /* LaunchScreen.storyboard */; };
 		4503D6151FDA8CC200C740A3 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4503D6131FDA8CC200C740A3 /* MainViewController.swift */; };
 		4503D6161FDA8CC200C740A3 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4503D6141FDA8CC200C740A3 /* MainViewController.xib */; };
+		45B6FE632011E9390049AFF8 /* PhotosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B6FE612011E9390049AFF8 /* PhotosViewController.swift */; };
+		45B6FE642011E9390049AFF8 /* PhotosViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45B6FE622011E9390049AFF8 /* PhotosViewController.xib */; };
 		BF70CA8D200F50A300B5DB41 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BF70CA8C200F50A300B5DB41 /* GoogleService-Info.plist */; };
 		EB8775C5575762804753BF9E /* Pods_PixelMe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EEC740402096819BEDD525AE /* Pods_PixelMe.framework */; };
 /* End PBXBuildFile section */
@@ -25,6 +27,8 @@
 		4503D60D1FDA8C8E00C740A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4503D6131FDA8CC200C740A3 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		4503D6141FDA8CC200C740A3 /* MainViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
+		45B6FE612011E9390049AFF8 /* PhotosViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosViewController.swift; sourceTree = "<group>"; };
+		45B6FE622011E9390049AFF8 /* PhotosViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PhotosViewController.xib; sourceTree = "<group>"; };
 		8B8BB7CD57A0512877D0CBDD /* Pods-PixelMe.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PixelMe.release.xcconfig"; path = "Pods/Target Support Files/Pods-PixelMe/Pods-PixelMe.release.xcconfig"; sourceTree = "<group>"; };
 		BF70CA8C200F50A300B5DB41 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		EEC740402096819BEDD525AE /* Pods_PixelMe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PixelMe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -79,6 +83,8 @@
 				4503D60D1FDA8C8E00C740A3 /* Info.plist */,
 				4503D6131FDA8CC200C740A3 /* MainViewController.swift */,
 				4503D6141FDA8CC200C740A3 /* MainViewController.xib */,
+				45B6FE612011E9390049AFF8 /* PhotosViewController.swift */,
+				45B6FE622011E9390049AFF8 /* PhotosViewController.xib */,
 			);
 			path = PixelMe;
 			sourceTree = "<group>";
@@ -156,6 +162,7 @@
 				4503D60C1FDA8C8E00C740A3 /* LaunchScreen.storyboard in Resources */,
 				BF70CA8D200F50A300B5DB41 /* GoogleService-Info.plist in Resources */,
 				4503D6161FDA8CC200C740A3 /* MainViewController.xib in Resources */,
+				45B6FE642011E9390049AFF8 /* PhotosViewController.xib in Resources */,
 				4503D6091FDA8C8E00C740A3 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -227,6 +234,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45B6FE632011E9390049AFF8 /* PhotosViewController.swift in Sources */,
 				4503D6021FDA8C8E00C740A3 /* AppDelegate.swift in Sources */,
 				4503D6151FDA8CC200C740A3 /* MainViewController.swift in Sources */,
 			);

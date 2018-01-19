@@ -21,6 +21,7 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.navigationItem.title = "PixelMe"
 //        self.navigationController?.navigationBar.barStyle = UIBarStyle.black
 //        let attrs = [
 //            NSAttributedStringKey.foregroundColor: UIColor.white
@@ -72,20 +73,6 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
             self.present(imagePicker, animated: true)
         }
     }
-    
-//    @IBAction func saveButton(_ sender: Any) {
-//        guard
-//            let image = imagePicked.image,
-//            let imageData = UIImageJPEGRepresentation(image, 0.6),
-//            let compressedJPGImage = UIImage(data: imageData)
-//            else { return }
-//
-//        UIImageWriteToSavedPhotosAlbum(compressedJPGImage, nil, nil, nil)
-//
-//        let alertController = UIAlertController(title: "Wow", message: "Votre image a bien été sauvegardée dans votre librairie", preferredStyle: .alert)
-//        self.present(alertController, animated: true)
-//
-//    }
 
     @IBAction func save(_ sender: Any) {
         uploadFile()
@@ -118,6 +105,11 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
     
     @IBAction func clear(_ sender: Any) {
         imagePicked.image = nil
+    }
+    
+    @IBAction func goToGallery(_ sender: Any) {
+        let photosVC = PhotosViewController(nibName: "PhotosViewController", bundle: nil)
+        navigationController?.pushViewController(photosVC, animated: true )
     }
     
     func filter(image: UIImage) {
