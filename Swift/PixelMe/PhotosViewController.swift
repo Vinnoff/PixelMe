@@ -7,26 +7,51 @@
 //
 
 import UIKit
+import FirebaseStorageUI
+import Firebase
 
 class PhotosViewController: UIViewController {
+    
+    let ref = Database.database().reference()
+    let storageRef = Storage.storage().reference()
+    
+    var imagesArray : [String] = []
+    
     
     @IBOutlet weak var photosCollectionView: UICollectionView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        
         self.photosCollectionView.register(UINib(nibName: "GalleryCell", bundle: nil), forCellWithReuseIdentifier: "Gallery")
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.title = "Gallery"
+        download()
         self.photosCollectionView.reloadData()
+    }
+    
+    func download() {
+        
+        ref.child("images").observe(.value) { (snapshot) in
+            
+            self.imagesArray = (snapshot.children.allObjects as! [DataSnapshot]).map({ $0.key })
+            /*for snap in snapshot.children.allObjects as! [DataSnapshot] {
+                let reference = self.storageRef.child("images/\(snap.key).jpg")
+                self.imagesArray.append(snap.key)
+            }*/
+            self.photosCollectionView.reloadData()
+        }
     }
     
 }
 
 extension PhotosViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
+        return self.imagesArray.count
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -38,8 +63,12 @@ extension PhotosViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Gallery", for: indexPath)
         
         if let galleryCell = cell as? GalleryCell {
-            galleryCell.labelCell.text = "HELLO"
-            galleryCell.layer.cornerRadius = 6
+            
+            let reference = self.storageRef.child("images/\(imagesArray[indexPath.item]).jpg")
+            
+            galleryCell.imageStorage.contentMode = UIViewContentMode.scaleAspectFit
+            galleryCell.imageStorage.sd_setImage(with: reference, placeholderImage: #imageLiteral(resourceName: "chouette"))
+            galleryCell.layer.cornerRadius = 4
             galleryCell.layer.shadowColor = UIColor.black.cgColor
             galleryCell.layer.shadowOffset = CGSize(width: 2, height: 2)
             galleryCell.layer.shadowOpacity = 0.3

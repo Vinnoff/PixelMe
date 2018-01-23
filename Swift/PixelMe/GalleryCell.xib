@@ -18,23 +18,22 @@
                 <rect key="frame" x="0.0" y="0.0" width="189" height="179"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vyy-OZ-a6Q">
-                        <rect key="frame" x="73" y="79" width="42" height="21"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="GaY-wN-Mmn">
+                        <rect key="frame" x="0.0" y="0.0" width="189" height="179"/>
+                    </imageView>
                 </subviews>
             </view>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstItem="vyy-OZ-a6Q" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="aQh-zt-4Bp"/>
-                <constraint firstItem="vyy-OZ-a6Q" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="h0U-pU-vVp"/>
+                <constraint firstAttribute="trailing" secondItem="GaY-wN-Mmn" secondAttribute="trailing" id="3bf-TQ-6VV"/>
+                <constraint firstAttribute="bottom" secondItem="GaY-wN-Mmn" secondAttribute="bottom" id="RRj-we-YVW"/>
+                <constraint firstItem="GaY-wN-Mmn" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="T7U-YJ-C9H"/>
+                <constraint firstItem="GaY-wN-Mmn" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="UZc-9L-MQH"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <size key="customSize" width="189" height="179"/>
             <connections>
-                <outlet property="labelCell" destination="vyy-OZ-a6Q" id="Nr6-sO-W7q"/>
+                <outlet property="imageStorage" destination="GaY-wN-Mmn" id="hjp-Mj-t1a"/>
             </connections>
             <point key="canvasLocation" x="9.5" y="65.5"/>
         </collectionViewCell>

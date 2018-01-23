@@ -9,17 +9,27 @@
 import UIKit
 import Firebase
 import FirebaseStorage
+import FirebaseStorageUI
 
 class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIPopoverControllerDelegate, UINavigationControllerDelegate {
 
     
     @IBOutlet weak var imagePicked: UIImageView!
+    @IBOutlet weak var opacityView: UIView!
+    @IBOutlet weak var loader: UIActivityIndicatorView!
     
     var imagePicker: UIImagePickerController!
+    
     let storage = Storage.storage()
+    let database = Database.database()
+    let ref = Database.database().reference()
+    let storageRef = Storage.storage().reference()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.opacityView.isHidden = true
+        self.loader.isHidden = true
         
         self.navigationItem.title = "PixelMe"
 //        self.navigationController?.navigationBar.barStyle = UIBarStyle.black
@@ -33,26 +43,35 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
         imagePicked.layer.borderColor = UIColor.white.cgColor
     }
     
-    func uploadFile(){
+    func uploadFileInStorage(){
         
-        if let imageToSave = imagePicked.image, let data = UIImagePNGRepresentation(imageToSave) {
+        if let imageToSave = imagePicked.image, let data = UIImageJPEGRepresentation(imageToSave.resizedImage(newSize: CGSize(width: 32 , height: 64)), 1.0) {
+            
+            self.opacityView.isHidden = false
+            self.loader.isHidden = false
+            
+            loader.startAnimating()
 
             let storageRef = storage.reference()
             
             let key = Database.database().reference().childByAutoId().key
-            // Create a reference to the file you want to upload
-            let riversRef = storageRef.child("images/\(key).bmp")
+            let riversRef = storageRef.child("images/\(key).jpg")
             
-            // Upload the file to the path "images/rivers.jpg"
             riversRef.putData(data, metadata: nil) { (metadata, error) in
                 if let error = error{
                     print(error)
                 }else{
                     print("Image sent")
+                    self.ref.child("images").updateChildValues([key:true])
+                    self.loader.stopAnimating()
+                    self.opacityView.isHidden = true
+                    self.loader.isHidden = true
+                    self.imagePicked.image = nil
                 }
             }
         }
     }
+    
 
     @IBAction func openCameraButton(_ sender: Any) {
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
@@ -76,7 +95,7 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
 
 
     @IBAction func saveLibrary(_ sender: Any) {
-        imagePicked.image = imagePicked.image?.filter()
+        imagePicked.image = imagePicked.image
         if let imageToSave = imagePicked.image {
             UIImageWriteToSavedPhotosAlbum(imageToSave, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
             
@@ -88,7 +107,7 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
     }
     
     @IBAction func send(_ sender: Any) {
-        uploadFile()
+        uploadFileInStorage()
     }
     
     @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
@@ -118,39 +137,40 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
         navigationController?.pushViewController(photosVC, animated: true)
     }
 }
-
-extension UIImage{
     
-    func resizeImageWith(newSize: CGSize) -> UIImage {
+//    func filter() -> UIImage {
+//        let controlsFilter = CIFilter(name: "CIColorControls")!
+//        let ccimage = CIImage(image: self)
+//        controlsFilter.setValue(ccimage, forKey: kCIInputImageKey)
+//        controlsFilter.setValue(2, forKey: kCIInputSaturationKey)
+//        let azerty = UIImage(cgImage: CIContext(options: nil).createCGImage(controlsFilter.outputImage!, from: controlsFilter.outputImage!.extent)!).resizeImage(newSize: CGSize(width: 64, height: 32))
+//
+//        return azerty
+//    }
+
+extension UIImage {
+    enum JPEGQuality: CGFloat {
+        case lowest  = 0
+        case low     = 0.25
+        case medium  = 0.5
+        case high    = 0.75
+        case highest = 1
+    }
+    
+    func jpeg(_ quality: JPEGQuality) -> Data? {
+        return UIImageJPEGRepresentation(self, quality.rawValue)
+    }
+    
+    func resizedImage(newSize: CGSize) -> UIImage {
+        // Guard newSize is different
+        guard self.size != newSize else { return self }
         
-        let horizontalRatio = newSize.width / size.width
-        let verticalRatio = newSize.height / size.height
-        let ratio = max(horizontalRatio, verticalRatio)
-        let newSize = CGSize(width: size.width * ratio, height: size.height * ratio)
-        UIGraphicsBeginImageContextWithOptions(newSize, true, 0)
-        draw(in: CGRect(origin: CGPoint(x: 0, y: 0), size: newSize))
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return newImage!
-    }
-    
-    func resizeImage(newSize: CGSize) -> UIImage {
-        UIGraphicsBeginImageContext(newSize)
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
         self.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return newImage!
+        if let newImage : UIImage = UIGraphicsGetImageFromCurrentImageContext() {
+            UIGraphicsEndImageContext()
+            return newImage
+        }
+        return self
     }
-
-    
-    func filter() -> UIImage {
-        let controlsFilter = CIFilter(name: "CIColorControls")!
-        let ccimage = CIImage(image: self)
-        controlsFilter.setValue(ccimage, forKey: kCIInputImageKey)
-        controlsFilter.setValue(2, forKey: kCIInputSaturationKey)
-        let azerty = UIImage(cgImage: CIContext(options: nil).createCGImage(controlsFilter.outputImage!, from: controlsFilter.outputImage!.extent)!).resizeImage(newSize: CGSize(width: 64, height: 32))
-
-        return azerty
-    }
-    
 }

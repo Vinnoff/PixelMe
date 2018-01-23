@@ -10,6 +10,6 @@ import UIKit
 
 class GalleryCell: UICollectionViewCell {
 
-    @IBOutlet weak var labelCell: UILabel!
-
+    @IBOutlet weak var imageStorage: UIImageView!
+    
 }
