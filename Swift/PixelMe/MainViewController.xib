@@ -173,11 +173,6 @@
                 <constraint firstItem="WUV-1X-2Hi" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="xln-Yi-Ig0"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
-            <variation key="default">
-                <mask key="subviews">
-                    <exclude reference="WUV-1X-2Hi"/>
-                </mask>
-            </variation>
             <point key="canvasLocation" x="33.5" y="54.5"/>
         </view>
     </objects>

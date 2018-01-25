@@ -16,6 +16,7 @@ class PhotosViewController: UIViewController {
     let storageRef = Storage.storage().reference()
     
     var imagesArray : [String] = []
+    var imagesDict : [String:URL] = [:]
     
     
     @IBOutlet weak var photosCollectionView: UICollectionView!
@@ -66,6 +67,10 @@ extension PhotosViewController: UICollectionViewDataSource {
             
             let reference = self.storageRef.child("images/\(imagesArray[indexPath.item]).jpg")
             
+            reference.downloadURL(completion: { (url, error) in
+                self.imagesDict[self.imagesArray[indexPath.item]] = url
+            })
+            
             galleryCell.imageStorage.contentMode = UIViewContentMode.scaleAspectFit
             galleryCell.imageStorage.sd_setImage(with: reference, placeholderImage: #imageLiteral(resourceName: "chouette"))
             galleryCell.layer.cornerRadius = 4
@@ -77,6 +82,11 @@ extension PhotosViewController: UICollectionViewDataSource {
             galleryCell.layer.masksToBounds = false
         }
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let url = imagesDict[imagesArray[indexPath.row]] else { return }
+        print(url.description)
     }
     
 }

@@ -45,7 +45,7 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
     
     func uploadFileInStorage(){
         
-        if let imageToSave = imagePicked.image, let data = UIImageJPEGRepresentation(imageToSave.resizedImage(newSize: CGSize(width: 32 , height: 64)), 1.0) {
+        if let imageToSave = imagePicked.image, let dataResize = UIImageJPEGRepresentation(imageToSave.resizedImage(newSize: CGSize(width: 32 , height: 64)), 1.0), let data = UIImageJPEGRepresentation(imageToSave, 1.0) {
             
             self.opacityView.isHidden = false
             self.loader.isHidden = false
@@ -55,7 +55,20 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
             let storageRef = storage.reference()
             
             let key = Database.database().reference().childByAutoId().key
-            let riversRef = storageRef.child("images/\(key).jpg")
+            var riversRef = storageRef.child("images/\(key)-resize.jpg")
+            
+            riversRef.putData(dataResize, metadata: nil) { (metadata, error) in
+                if let error = error{
+                    print(error)
+                }else{
+                    print("Image sent")
+                    self.ref.child("images").updateChildValues([key:true])
+                    self.opacityView.isHidden = true
+                    self.imagePicked.image = nil
+                }
+            }
+            
+            riversRef = storageRef.child("images/\(key).jpg")
             
             riversRef.putData(data, metadata: nil) { (metadata, error) in
                 if let error = error{
@@ -63,15 +76,15 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
                 }else{
                     print("Image sent")
                     self.ref.child("images").updateChildValues([key:true])
-                    self.loader.stopAnimating()
                     self.opacityView.isHidden = true
-                    self.loader.isHidden = true
                     self.imagePicked.image = nil
                 }
             }
+            self.loader.stopAnimating()
+            self.opacityView.isHidden = true
+            self.loader.isHidden = true
         }
     }
-    
 
     @IBAction func openCameraButton(_ sender: Any) {
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
@@ -162,7 +175,7 @@ extension UIImage {
     }
     
     func resizedImage(newSize: CGSize) -> UIImage {
-        // Guard newSize is different
+        
         guard self.size != newSize else { return self }
         
         UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
@@ -173,4 +186,5 @@ extension UIImage {
         }
         return self
     }
+    
 }
