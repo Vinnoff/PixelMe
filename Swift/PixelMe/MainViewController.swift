@@ -32,11 +32,6 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
         self.loader.isHidden = true
         
         self.navigationItem.title = "PixelMe"
-//        self.navigationController?.navigationBar.barStyle = UIBarStyle.black
-//        let attrs = [
-//            NSAttributedStringKey.foregroundColor: UIColor.white
-//        ]
-//        UINavigationBar.appearance().titleTextAttributes = attrs
         
         imagePicked.contentMode = UIViewContentMode.scaleAspectFit
         imagePicked.layer.borderWidth = 2
@@ -45,44 +40,62 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
     
     func uploadFileInStorage(){
         
-        if let imageToSave = imagePicked.image, let dataResize = UIImageJPEGRepresentation(imageToSave.resizedImage(newSize: CGSize(width: 32 , height: 64)), 1.0), let data = UIImageJPEGRepresentation(imageToSave, 1.0) {
+        if let imageToSave = imagePicked.image {
             
-            self.opacityView.isHidden = false
-            self.loader.isHidden = false
+            let imageRotated = imageRotatedByDegrees(oldImage: imageToSave, deg: 180)
             
-            loader.startAnimating()
-
-            let storageRef = storage.reference()
-            
-            let key = Database.database().reference().childByAutoId().key
-            var riversRef = storageRef.child("images/\(key)-resize.jpg")
-            
-            riversRef.putData(dataResize, metadata: nil) { (metadata, error) in
-                if let error = error{
-                    print(error)
-                }else{
-                    print("Image sent")
-                    self.ref.child("images").updateChildValues([key:true])
-                    self.opacityView.isHidden = true
-                    self.imagePicked.image = nil
+            if let dataResize = UIImageJPEGRepresentation(imageRotated.resizedImage(newSize: CGSize(width: 32 , height: 16)), 1.0),
+                let data = UIImageJPEGRepresentation(imageToSave, 1.0) {
+                
+                self.opacityView.isHidden = false
+                self.loader.isHidden = false
+                
+                loader.startAnimating()
+                
+                let storageRef = storage.reference()
+                
+                let key = Database.database().reference().childByAutoId().key
+                
+                var riversRef = self.storageRef.child("images/current.jpg")
+                
+                riversRef.putData(dataResize, metadata: nil) { (metadata, error) in
+                    if let error = error{
+                        print(error)
+                    }else{
+                        print("Current image sent")
+                    }
                 }
-            }
-            
-            riversRef = storageRef.child("images/\(key).jpg")
-            
-            riversRef.putData(data, metadata: nil) { (metadata, error) in
-                if let error = error{
-                    print(error)
-                }else{
-                    print("Image sent")
-                    self.ref.child("images").updateChildValues([key:true])
-                    self.opacityView.isHidden = true
-                    self.imagePicked.image = nil
+                
+                riversRef = storageRef.child("images/\(key)-resize.bmp")
+                
+                riversRef.putData(dataResize, metadata: nil) { (metadata, error) in
+                    if let error = error{
+                        print(error)
+                    }else{
+                        print("Image sent")
+                        self.ref.child("images").updateChildValues([key:true])
+                        self.opacityView.isHidden = true
+                        self.imagePicked.image = nil
+                    }
                 }
+                
+                riversRef = storageRef.child("images/\(key).bmp")
+                
+                riversRef.putData(data, metadata: nil) { (metadata, error) in
+                    if let error = error{
+                        print(error)
+                    }else{
+                        print("Image sent")
+                        self.ref.child("images").updateChildValues([key:true])
+                        self.opacityView.isHidden = true
+                        self.imagePicked.image = nil
+                    }
+                }
+                self.loader.stopAnimating()
+                self.opacityView.isHidden = true
+                self.loader.isHidden = true
+                
             }
-            self.loader.stopAnimating()
-            self.opacityView.isHidden = true
-            self.loader.isHidden = true
         }
     }
 
@@ -125,7 +138,6 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
     
     @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
         if let error = error {
-            // we got back an error!
             let ac = UIAlertController(title: "Erreur !", message: error.localizedDescription, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default))
             present(ac, animated: true)
@@ -149,17 +161,24 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
         let photosVC = PhotosViewController(nibName: "PhotosViewController", bundle: nil)
         navigationController?.pushViewController(photosVC, animated: true)
     }
-}
     
-//    func filter() -> UIImage {
-//        let controlsFilter = CIFilter(name: "CIColorControls")!
-//        let ccimage = CIImage(image: self)
-//        controlsFilter.setValue(ccimage, forKey: kCIInputImageKey)
-//        controlsFilter.setValue(2, forKey: kCIInputSaturationKey)
-//        let azerty = UIImage(cgImage: CIContext(options: nil).createCGImage(controlsFilter.outputImage!, from: controlsFilter.outputImage!.extent)!).resizeImage(newSize: CGSize(width: 64, height: 32))
-//
-//        return azerty
-//    }
+    
+    func imageRotatedByDegrees(oldImage: UIImage, deg degrees: CGFloat) -> UIImage {
+        let rotatedViewBox: UIView = UIView(frame: CGRect(x: 0, y: 0, width: oldImage.size.width, height: oldImage.size.height))
+        let t: CGAffineTransform = CGAffineTransform(rotationAngle: degrees * CGFloat.pi / 180)
+        rotatedViewBox.transform = t
+        let rotatedSize: CGSize = rotatedViewBox.frame.size
+        UIGraphicsBeginImageContext(rotatedSize)
+        let bitmap: CGContext = UIGraphicsGetCurrentContext()!
+        bitmap.translateBy(x: rotatedSize.width / 2, y: rotatedSize.height / 2)
+        bitmap.rotate(by: (degrees * CGFloat.pi / 180))
+        bitmap.scaleBy(x: 1.0, y: -1.0)
+        bitmap.draw(oldImage.cgImage!, in: CGRect(x: -oldImage.size.width / 2, y: -oldImage.size.height / 2, width: oldImage.size.width, height: oldImage.size.height))
+        let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return newImage
+    }
+}
 
 extension UIImage {
     enum JPEGQuality: CGFloat {
@@ -188,3 +207,5 @@ extension UIImage {
     }
     
 }
+
+

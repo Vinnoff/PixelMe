@@ -24,8 +24,6 @@ class PhotosViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        
         self.photosCollectionView.register(UINib(nibName: "GalleryCell", bundle: nil), forCellWithReuseIdentifier: "Gallery")
     }
     
@@ -85,8 +83,22 @@ extension PhotosViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let url = imagesDict[imagesArray[indexPath.row]] else { return }
-        print(url.description)
+        
+        let reference = self.storageRef.child("images/\(imagesArray[indexPath.item])-resize.jpg")
+        
+        reference.getData(maxSize: 1 * 1024 * 1024) { data, error in
+            
+            guard let dataImage = data else { return }
+            let riversRef = self.storageRef.child("images/current.jpg")
+            
+            riversRef.putData(dataImage, metadata: nil) { (metadata, error) in
+                if let error = error{
+                    print(error)
+                } else {
+                    print("Current image sent")
+                }
+            }
+        }
     }
     
 }
