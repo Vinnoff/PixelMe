@@ -74,8 +74,8 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
                     }else{
                         print("Image sent")
                         self.ref.child("images").updateChildValues([key:true])
-                        self.opacityView.isHidden = true
-                        self.imagePicked.image = nil
+                        //self.opacityView.isHidden = true
+                        //self.imagePicked.image = nil
                     }
                 }
                 
@@ -87,15 +87,20 @@ class MainViewController: UIViewController, UIImagePickerControllerDelegate, UIP
                     }else{
                         print("Image sent")
                         self.ref.child("images").updateChildValues([key:true])
+                        self.loader.stopAnimating()
+                        self.loader.isHidden = true
                         self.opacityView.isHidden = true
                         self.imagePicked.image = nil
+                        let ac = UIAlertController(title: "", message: "Image envoyée !", preferredStyle: .alert)
+                        ac.addAction(UIAlertAction(title: "Ok", style: .default))
+                        self.present(ac, animated: true)
                     }
                 }
-                self.loader.stopAnimating()
-                self.opacityView.isHidden = true
-                self.loader.isHidden = true
-                
             }
+        } else {
+            let ac = UIAlertController(title: "Attention", message: "Vous n'avez pas d'image à envoyer", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Réessayer", style: .default))
+            self.present(ac, animated: true)
         }
     }
 

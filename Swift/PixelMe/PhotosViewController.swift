@@ -7,8 +7,8 @@
 //
 
 import UIKit
-import FirebaseStorageUI
 import Firebase
+import FirebaseStorageUI
 
 class PhotosViewController: UIViewController {
     
@@ -23,12 +23,11 @@ class PhotosViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.title = "Gallery"
         self.photosCollectionView.register(UINib(nibName: "GalleryCell", bundle: nil), forCellWithReuseIdentifier: "Gallery")
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.navigationController?.title = "Gallery"
         download()
         self.photosCollectionView.reloadData()
     }
@@ -63,7 +62,7 @@ extension PhotosViewController: UICollectionViewDataSource {
         
         if let galleryCell = cell as? GalleryCell {
             
-            let reference = self.storageRef.child("images/\(imagesArray[indexPath.item]).jpg")
+            let reference = self.storageRef.child("images/\(imagesArray[indexPath.item]).bmp")
             
             reference.downloadURL(completion: { (url, error) in
                 self.imagesDict[self.imagesArray[indexPath.item]] = url
@@ -84,7 +83,7 @@ extension PhotosViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let reference = self.storageRef.child("images/\(imagesArray[indexPath.item])-resize.jpg")
+        let reference = self.storageRef.child("images/\(imagesArray[indexPath.item])-resize.bmp")
         
         reference.getData(maxSize: 1 * 1024 * 1024) { data, error in
             
